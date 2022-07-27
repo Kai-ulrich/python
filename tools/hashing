@@ -1,0 +1,19 @@
+import hashlib
+
+message = input("Enter a message you want hashed. \n").encode()
+print("\nEncryption Options:" + "\n \nMD5 \n" + "SHA-256 \n" + "SHA-384 \n" + "SHA-3-256 \n" + "SHA-3-512 \n")
+print("What hashing algorithm would you like: \n")
+algorithm = input("Enter algorithm:\n")
+
+if algorithm == "MD5":
+    print("MD5:", hashlib.md5(message).hexdigest())
+elif algorithm == "SHA-256":
+    print("SHA-256:", hashlib.sha256(message).hexdigest())
+elif algorithm == "SHA-384":
+    print("SHA-384:", hashlib.sha384(message).hexdigest())   
+elif algorithm == "SHA-3-256":
+    print("SHA-3-256:", hashlib.sha3_256(message).hexdigest())
+elif algorithm == "SHA-3-512":
+    print("SHA-3-512:", hashlib.sha3_512(message).hexdigest())  
+else:
+    print("Invalid Input!")
