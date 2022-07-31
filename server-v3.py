@@ -33,8 +33,14 @@ def listen():
             continue
         if cmd_str == 'q':
             break
-        data = c.recv(1024).decode("utf-8")
-        print(str(data))
+        data = c.recv(4096).decode("utf-8")
+        while "--complete--" not in str(data):
+            print(str(data))
+            data = c.recv(4096).decode("utf-8")
+        
+        data = str(data)
+        data = data.replace("--complete--", "")
+        print(data)
 
 def close():
     c.close()
@@ -42,12 +48,16 @@ def close():
 # download
 def download():
     filename = input("filename-#")
-    c.send(filename)
+    c.send(filename.encode("utf-8"))
     f = open(filename, 'wb')
-    i = c.recv(1024)
-    while 'complete' not in str(i):
+    i = c.recv(4096)
+    while '--complete--' not in str(i.decode("utf-8")):
         f.write(i)
-        i = c.recv(1024)
+        i = c.recv(4096)
+
+    i = str(i.decode("utf-8"))
+    i = i.replace("--complete--", "")
+    f.write(i.encode("utf-8"))
     f.close()
 
 def main():
